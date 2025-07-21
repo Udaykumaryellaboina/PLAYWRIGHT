@@ -3,16 +3,20 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "playwright test"
-  },
+  "Runner": "cucumber-js --require-module ts-node/register --require tests/steps/**/*.ts --format json:reports/cucumber-report.json tests/features/**/*.feature",
+  "cucumber:report": "node generate-cucumber-html-report.js"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@playwright/test": "^1.49.0",
-    "@types/node": "^22.10.1",
-    "playwright": "^1.49.0",
-    "typescript": "^5.7.2"
+    "@cucumber/cucumber": "^11.3.0",
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^24.0.15"
+  },
+  "dependencies": {
+    "module": "^1.1.0",
+    "ts-node": "^10.9.2"
   }
 }
