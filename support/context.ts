@@ -9,3 +9,6 @@ export function init(world: CustomWorld) {
 export function getContext(world: CustomWorld) {
   return world.context;
 }
+export function getPage(world: CustomWorld) {
+  return world.page;
+}

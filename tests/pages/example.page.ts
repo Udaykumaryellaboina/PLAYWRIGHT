@@ -30,7 +30,7 @@ export class ExamplePage {
   }
 
   async fill_textboxdescription(value: string): Promise<void> {
-    await this.model.messageInput.nth(0).fill(value);
+    await this.model.messageInput.fill(value);
   }
 
   async verify_title(expected: string): Promise<void> {
