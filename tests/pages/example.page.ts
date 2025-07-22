@@ -1,36 +1,43 @@
-import { Page } from '@playwright/test';
+// example.page.ts
+import { expect, Page } from '@playwright/test';
+import { ExampleModel } from './example.model';
 
 export class ExamplePage {
-  constructor(private page: Page) {}
+  private model: ExampleModel;
 
-  async gotoPlayground() {
-    await this.page.goto('https://www.lambdatest.com/selenium-playground/');
+  constructor(private page: Page) {
+    this.model = new ExampleModel(page);
   }
 
-  async navigateToInputFormSubmit() {
-    await this.page.click('a:has-text("Input Form Submit")');
-    await this.page.waitForURL('**/input-form-demo');
+  async navigate_to(): Promise<void> {
+    await this.page.goto(this.model.url);
   }
 
-  async fillFormWithValidDetails() {
-    await this.page.fill('input[name="name"]', 'John Doe');
-    await this.page.fill('input[name="email"]', 'john.doe@example.com');
-    await this.page.fill('input[name="password"]', 'Password123!');
-    await this.page.fill('input[name="company"]', 'Example Inc');
-    await this.page.fill('input[name="website"]', 'https://example.com');
-    await this.page.selectOption('select[name="country"]', { label: 'United States' });
-    await this.page.fill('input[name="city"]', 'New York');
-    await this.page.fill('input[name="address_line1"]', '123 Main St');
-    await this.page.fill('input[name="address_line2"]', 'Apt 4B');
-    await this.page.fill('input[name="state"]', 'NY');
-    await this.page.fill('input[name="zip"]', '10001');
+  async click_menu(menuText: string): Promise<void> {
+    await this.model.getLinkByText(menuText).click();
   }
 
-  async submitForm() {
-    await this.page.click('button[type="submit"]');
+  async click_button(buttonText: string): Promise<void> {
+    await this.model.getButtonByText(buttonText).click();
   }
 
-  async getSuccessMessage() {
-    return this.page.textContent('.success-msg, .alert-success, #success_message');
+  async fill_textbox(label: string, value: string): Promise<void> {
+    await this.model.getInputByLabel(label).fill(value);
   }
+
+  async fill_textboxname(value: string): Promise<void> {
+    await this.model.nameInput.fill(value);
+  }
+
+  async fill_textboxdescription(value: string): Promise<void> {
+    await this.model.messageInput.nth(0).fill(value);
+  }
+
+  async verify_title(expected: string): Promise<void> {
+    await expect(this.page).toHaveTitle(new RegExp(expected, 'i'));
+  }
+
+  async verify_text_visible(text: string): Promise<void> {
+    await expect(this.model.getText(text)).toBeVisible();
+}
 }

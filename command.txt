@@ -14,6 +14,7 @@ npm run Runner -- --name "User submits the input form successfully"
 npm run Runner -- --parallel=2
 
 # Generate Cucumber HTML report (after running tests)
+npm install --save-dev cucumber-html-reporter
 npm run cucumber:report
 
 # Open the generated Cucumber HTML report

@@ -1,22 +1,24 @@
 {
   "name": "playwright",
   "version": "1.0.0",
+  "description": "BDD framework using Playwright, Cucumber, and TypeScript",
   "main": "index.js",
   "scripts": {
-  "Runner": "cucumber-js --require-module ts-node/register --require tests/steps/**/*.ts --format json:reports/cucumber-report.json tests/features/**/*.feature",
-  "cucumber:report": "node generate-cucumber-html-report.js"
-},
-  "keywords": [],
-  "author": "",
+    "Runner": "cucumber-js --require-module ts-node/register --require-module tsconfig-paths/register --require tests/steps/**/*.ts --require support/**/*.ts --format json:reports/cucumber-report.json tests/features/**/*.feature",
+    "cucumber:report": "node generate-cucumber-html-report.js"
+  },
+  "author": "Your Name",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
     "@cucumber/cucumber": "^11.3.0",
     "@playwright/test": "^1.54.1",
-    "@types/node": "^24.0.15"
+    "@types/node": "^20.11.30",
+    "cucumber-html-reporter": "^7.2.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
-    "module": "^1.1.0",
-    "ts-node": "^10.9.2"
+    "module": "^1.1.0"
   }
 }

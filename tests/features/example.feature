@@ -1,9 +1,10 @@
-@login
-Feature: Submit Input Form on LambdaTest Selenium Playground
+@FormSubmission
+@AjaxForm
+Feature: Ajax Form Submission
 
-  Scenario: User submits the input form successfully
-    Given I am on the LambdaTest Selenium Playground page
-    When I navigate to the "Input Form Submit" page
-    And I fill in the form with valid details
-    And I submit the form
-    Then I should see a success message confirming the form
+  Scenario: Submit the Ajax Form with valid name and message
+    Given 'Selenium Grid Online':user navigates to url
+    When 'Selenium Grid Online':user clicks on "Ajax Form Submit"
+    When 'Selenium Grid Online':user fills title textbox with "uday"
+    And 'Selenium Grid Online':user fills description textbox with "Hi"
+    And 'Selenium Grid Online':user clicks on "submit" button

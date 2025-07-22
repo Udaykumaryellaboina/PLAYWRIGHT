@@ -1,43 +1,45 @@
-import { Given, When, Then, setDefaultTimeout, Before, After } from '@cucumber/cucumber';
+import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { chromium, Browser, Page } from 'playwright';
-import { ExamplePage } from '../pages/example.page';
+import { init, getContext } from '../../support/context';
+import type { CustomWorld } from '../../support/custom-world';
+import { ExamplePage } from '@pages/example.page';
+let pageObject: ExamplePage;
 
-let browser: Browser;
-let page: Page;
-let examplePage: ExamplePage;
-
-setDefaultTimeout(60 * 1000);
-
-Before(async function () {
-  browser = await chromium.launch({ headless: false }); // set to true for headless
-  page = await browser.newPage();
-  examplePage = new ExamplePage(page);
+Given('{string}:user navigates to url', async function (this: CustomWorld, _step: string) {
+  init(this);
+  pageObject = new ExamplePage(this.page);
+  await pageObject.navigate_to();
 });
 
-After(async function () {
-  await page.close();
-  await browser.close();
+When('{string}:user clicks on {string}', async function (this: CustomWorld, _step: string, linkText: string) {
+  init(this);
+  await pageObject.click_menu(linkText);
 });
 
-Given('I am on the LambdaTest Selenium Playground page', async function () {
-  await examplePage.gotoPlayground();
+
+When('{string}:user fills title textbox with {string}', async function (this: CustomWorld, _step: string, value: string) {
+  init(this);
+  await pageObject.fill_textboxname(value);
 });
 
-When('I navigate to the {string} page', async function (pageName: string) {
-  await examplePage.navigateToInputFormSubmit();
+When('{string}:user fills description textbox with {string}', async function (this: CustomWorld, _step: string, value: string) {
+  init(this);
+  await pageObject.fill_textboxdescription(value);
 });
 
-When('I fill in the form with valid details', async function () {
-  await examplePage.fillFormWithValidDetails();
+Then('{string}:the page should contain {string}', async function (this: CustomWorld, _step: string, expectedText: string) {
+  init(this);
+  await pageObject.verify_text_visible(expectedText);
+});
+When('{string}:user clicks on {string} button', async function (this: CustomWorld, _step: string, buttonText: string) {
+  init(this);
+  await pageObject.click_button(buttonText);
 });
 
-When('I submit the form', async function () {
-  await examplePage.submitForm();
-});
-
-Then('I should see a success message confirming the form', async function () {
-  const message = await examplePage.getSuccessMessage();
-  expect(message).toContain('Thanks');
-  expect(message).toContain('for contacting us');
+Then('{string}:the page should not contain {string}', async function (this: CustomWorld, _step: string, unexpectedText: string) {
+  init(this);
+  const context = getContext(this);
+  const page = context.pages()[0];
+  const content = await page.content();
+  expect(content).not.toContain(unexpectedText);
 });
