@@ -1,40 +1,90 @@
-import { BeforeAll, Before, AfterAll, After, Status, setDefaultTimeout } from '@cucumber/cucumber';
-import { Browser, chromium } from '@playwright/test';
-import { CustomWorld } from './custom-world';
+import {
+  BeforeAll,
+  Before,
+  AfterAll,
+  After,
+  AfterStep,
+  Status,
+  setDefaultTimeout,
+} from '@cucumber/cucumber';
+import { Browser, BrowserContext, chromium } from '@playwright/test';
 import fs from 'fs-extra';
 import path from 'path';
+import { CustomWorld } from './custom-world';
 
-setDefaultTimeout(60 * 1000); // 60 seconds
+setDefaultTimeout(60 * 1000);
 
 let browser: Browser;
 
+// 🚀 Launch browser before all tests
 BeforeAll(async () => {
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({
+    headless: true,
+    args: ['--start-maximized'],
+  });
 });
 
+// 🧪 Setup context and page before each scenario
 Before(async function (this: CustomWorld) {
-  this.context = await browser.newContext();
+  this.context = await browser.newContext({
+    recordVideo: { dir: 'reports/videos/' },
+    viewport: null, // optional: full screen
+  });
+
+  // Capture browser console logs
+  this.consoleLogs = [];
+  this.context.on('page', page => {
+    page.on('console', msg => {
+      this.consoleLogs.push(`[${msg.type()}] ${msg.text()}`);
+    });
+  });
+
+  await this.context.tracing.start({ screenshots: true, snapshots: true });
   this.page = await this.context.newPage();
+  this.stepCounter = 0;
 });
 
-After(async function (this: CustomWorld, { pickle, result }) {
+// 📸 Capture screenshot only on failure
+AfterStep(async function (this: CustomWorld, { result }) {
+  this.stepCounter++;
+
   if (result?.status === Status.FAILED) {
-    const screenshotDir = path.join('reports', 'screenshots');
-    await fs.ensureDir(screenshotDir);
+    // Attach screenshot
+    const screenshotBuffer = await this.page.screenshot({ fullPage: true });
+    await this.attach(screenshotBuffer, 'image/png');
 
-    const sanitizedTitle = pickle.name.replace(/[^a-zA-Z0-9]/g, '_');
-    const screenshotPath = path.join(screenshotDir, `${sanitizedTitle}.png`);
+    // Attach console logs
+    const logs = this.consoleLogs.join('\n') || 'No console logs.';
+    await this.attach(logs, 'text/plain');
+  }
+});
 
-    await this.page.screenshot({ path: screenshotPath, type: 'png' });
+// 🧹 Cleanup and attach trace/video after each scenario
+After(async function (this: CustomWorld, { pickle }) {
+  const scenarioName = pickle.name.replace(/[^a-zA-Z0-9-_]/g, '_');
+  const reportsDir = path.join('reports');
 
-    const imageBuffer = await fs.readFile(screenshotPath);
-    await this.attach(imageBuffer, 'image/png');
+  // Trace
+  const tracePath = path.join(reportsDir, 'traces', `${scenarioName}-trace.zip`);
+  await fs.ensureDir(path.dirname(tracePath));
+  await this.context.tracing.stop({ path: tracePath });
+  const traceBuffer = await fs.readFile(tracePath);
+  await this.attach(traceBuffer, 'application/zip');
+
+  // Video
+  const video = await this.page.video();
+  if (video) {
+    const videoPath = await video.path();
+    const videoBuffer = await fs.readFile(videoPath);
+    await this.attach(videoBuffer, 'video/webm');
   }
 
+  // Cleanup browser context
   await this.page.close();
   await this.context.close();
 });
 
+// 🔚 Close browser after all tests
 AfterAll(async () => {
   await browser.close();
 });

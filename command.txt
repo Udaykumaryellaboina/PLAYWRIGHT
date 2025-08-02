@@ -25,6 +25,20 @@ npm install --save-dev @shelex/cucumberjs-allure2-reporter
 npm run cucumber:report
 npm run report:full
 
+✅ Run All Scenarios
+npm run Runner
+
+🏷️ Run Scenarios with Specific Tag
+npm run Runner:tag -- --tags @login
+
+🧾 Generate HTML Report from JSON
+npm run cucumber:report
+📦 Full Test Run with Report
+
+npm run report:full
+🏷️ Tag Run + Report Together
+npm run report:tag -- --tags @login
+
 
 # Open the generated Cucumber HTML report
 # (Open reports/cucumber-report.html in your browser)

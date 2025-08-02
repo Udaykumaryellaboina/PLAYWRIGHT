@@ -5,24 +5,31 @@
   "main": "index.js",
   "scripts": {
     "Runner": "cucumber-js --require-module ts-node/register --require-module tsconfig-paths/register --require tests/steps/**/*.ts --require support/**/*.ts --format json:reports/cucumber-report.json --format @cucumber/pretty-formatter tests/features/**/*.feature",
-    "cucumber:report": "node generate-cucumber-html-report.js",
-    "report:full": "npm run Runner && npm run cucumber:report"
+
+    "Runner:tag": "cucumber-js --require-module ts-node/register --require-module tsconfig-paths/register --require tests/steps/**/*.ts --require support/**/*.ts --format json:reports/cucumber-report.json --format @cucumber/pretty-formatter tests/features/**/*.feature",
+
+    "cucumber:report": "node support/report-generator.js",
+
+    "report:full": "npm run Runner && npm run cucumber:report",
+
+    "report:tag": "npm run Runner:tag -- --tags @tag && npm run cucumber:report"
   },
   "author": "Your Name",
   "license": "ISC",
   "devDependencies": {
-    "@cucumber/cucumber": "^11.3.0",
-    "@cucumber/pretty-formatter": "^2.0.1",
-    "@playwright/test": "^1.54.1",
-    "@types/fs-extra": "^11.0.4",
-    "@types/node": "^20.11.30",
-    "cucumber-html-reporter": "^7.2.0",
-    "fs-extra": "^11.1.1",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.4.5"
+    "@cucumber/cucumber": "^11.3.0",                      
+    "@cucumber/pretty-formatter": "^2.0.1",               
+    "@playwright/test": "^1.54.1",                        
+    "@types/fs-extra": "^11.0.4",                         
+    "@types/node": "^20.11.30",                           
+    "cucumber-html-reporter": "^7.2.0",                   
+    "fs-extra": "^11.1.1",                                
+    "ts-node": "^10.9.2",                                 
+    "tsconfig-paths": "^4.2.0",                           
+    "typescript": "^5.4.5"                                
   },
   "dependencies": {
-    "module": "^1.1.0"
+    "module": "^1.1.0"                                    
+  
   }
 }

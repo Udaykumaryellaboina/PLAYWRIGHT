@@ -1,0 +1,71 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // Standard debug for all features
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug BDD Runner (All)",
+      "program": "${workspaceFolder}/node_modules/.bin/cucumber-js",
+      "args": [
+        "--require-module",
+        "ts-node/register",
+        "--require",
+        "tests/steps/**/*.ts",
+        "tests/features/**/*.feature"
+      ],
+      "console": "integratedTerminal"
+    },
+    // Debug with tags (edit @login to your tag)
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug BDD Runner (Tag: @login)",
+      "program": "${workspaceFolder}/node_modules/.bin/cucumber-js",
+      "args": [
+        "--require-module",
+        "ts-node/register",
+        "--require",
+        "tests/steps/**/*.ts",
+        "--tags",
+        "@login",
+        "tests/features/**/*.feature"
+      ],
+      "console": "integratedTerminal"
+    },
+    // Debug with parallel execution (edit 2 to your desired parallelism)
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug BDD Runner (Parallel: 2)",
+      "program": "${workspaceFolder}/node_modules/.bin/cucumber-js",
+      "args": [
+        "--require-module",
+        "ts-node/register",
+        "--require",
+        "tests/steps/**/*.ts",
+        "--parallel",
+        "2",
+        "tests/features/**/*.feature"
+      ],
+      "console": "integratedTerminal"
+    },
+    // Debug a single scenario by name (edit scenario name as needed)
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug BDD Runner (Scenario: Input Form Submit)",
+      "program": "${workspaceFolder}/node_modules/.bin/cucumber-js",
+      "args": [
+        "--require-module",
+        "ts-node/register",
+        "--require",
+        "tests/steps/**/*.ts",
+        "--name",
+        "User submits the input form successfully",
+        "tests/features/**/*.feature"
+      ],
+      "console": "integratedTerminal"
+    }
+  ]
+}
